@@ -24,7 +24,7 @@ class VlcPlayer(CommonPlaySkill):
         self.player = self.instance.media_player_new()
         self.list_player.set_media_player(self.player)
         # add current track list 
-        self.track_lists = []
+        self.track_lists = {}
         self.track_lists = self.vlc_add_list_to_lists(self.track_lists, self.list_name["default"])
         self.track_lists = self.vlc_add_local_folder_to_list('/home/jsauwen/Musik',self.track_lists,self.list_name["default"])
         self.list_player.set_media_list(self.track_lists[self.list_name["default"]])
