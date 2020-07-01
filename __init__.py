@@ -17,7 +17,7 @@ class VlcPlayer(CommonPlaySkill):
         self.instance = vlc.Instance()
         # configurations
         self.list_config = {}
-        self.init_config
+        self.init_config()
 
         # list player
         self.list_player = self.instance.media_list_player_new()
@@ -71,7 +71,7 @@ class VlcPlayer(CommonPlaySkill):
         }
 
     def add_standard_lists(self):
-        for config_name in self.list_config.keys:
+        for config_name in self.list_config.keys():
             self.track_lists = self.vlc_add_list_to_lists(self.track_lists, self.list_config[config_name]['list'])
             self.track_lists = self.vlc_add_local_folder_to_list(self.settings.get(self.list_config[config_name]['list']), self.track_lists, self.list_config[config_name]['list'])
 
