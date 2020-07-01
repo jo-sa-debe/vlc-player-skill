@@ -43,6 +43,7 @@ class VlcPlayer(CommonPlaySkill):
         return (phrase, level)
 
     def CPS_start(self, phrase, data):
+        self.speak("start phrase : " + str(phrase))
         self.vlc_play()
         pass
 
