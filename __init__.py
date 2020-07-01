@@ -28,11 +28,17 @@ class VlcPlayer(CommonPlaySkill):
         self.track_lists = self.vlc_add_list_to_lists(self.track_lists, self.list_name["default"])
         self.track_lists = self.vlc_add_local_folder_to_list('/home/jsauwen/Musik', self.track_lists, self.list_name["default"])
         self.list_player.set_media_list(self.track_lists[self.list_name["default"]])
-        # events
+        # vlc events
         self.vlc_events = self.player.event_manager()
         self.vlc_list_events = self.list_player.event_manager()
         self.vlc_events.event_attach(vlc.EventType.MediaPlayerPlaying, self.vlc_start_track, 1)
         self.vlc_list_events.event_attach(vlc.EventType.MediaListPlayerPlayed, self.vlc_queue_ended, 0)
+        # mycroft events
+        self.add_event('mycroft.audio.service.next', self.vlc_next)
+        self.add_event('mycroft.audio.service.prev', self.vlc_prev)
+        self.add_event('mycroft.audio.service.pause', self.vlc_pause)
+        self.add_event('mycroft.audio.service.resume', self.vlc_resume)
+        self.add_event('mycroft.audio.service.stop', self.vlc_stop)
 
     def CPS_match_query_phrase(self, phrase):
         level = CPSMatchLevel.GENERIC
@@ -76,7 +82,6 @@ class VlcPlayer(CommonPlaySkill):
         pass
 
     def vlc_play(self):
-        self.speak(str(self.track_lists))
         self.list_player.play()
         pass
 
@@ -84,6 +89,28 @@ class VlcPlayer(CommonPlaySkill):
         if self.player.is_playing():
             self.list_player.stop()
         pass
+
+    def vlc_next(self):
+        if self.player.is_playing():
+            self.list_player.next()
+        pass
+
+    def vlc_prev(self):
+        if self.player.is_playing():
+            self.list_player.prev()
+        pass
+
+    def vlc_pause(self):
+        if self.player.is_playing():
+            self.list_player.pause()
+        pass
+
+
+    def vlc_resume(self):
+        if self.player.is_playing():
+            self.list_player.resume()
+        pass
+
 
 
 def create_skill():
