@@ -101,6 +101,7 @@ class VlcPlayer(CommonPlaySkill):
         
         if list_name in lists: 
             for dirpath, dirnames, filenames in os.walk(folder):
+                self.speak("folder : " + str(dirpath) + " " + str(dirnames) + " " + str(filenames) )
                 for file in filenames:
                     track_path = Path(dirpath)
                     track_path = track_path / file
