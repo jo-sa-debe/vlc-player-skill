@@ -3,35 +3,35 @@ skillMetadata:
   sections:
     - name: Audio Folder
       fields:
-        - name: audio_folder
+        - name: audio_path
           type: text
           label: Audio folder
           value: "~/Musik"
           placeholder: this folder contains the audio files
     - name: Playlists folder
       fields:
-        - name: playlist_folder
+        - name: playlist_path
           type: text
           label: playlist folder
           value: "~/playlists"
           placeholder: this folder contains the playlists files
     - name: Video Folder
       fields:
-        - name: video_folder
+        - name: video_path
           type: text
           label: Video folder
           value: "~/Videos"
           placeholder: this folder to the video files
     - name: path to CD
       fields:
-        - name: cd_folder
+        - name: cd_path
           type: text
           label: CD path
           value: "/dev/sdr0"
           placeholder: this is the path to the CD device
     - name: path to DVD
       fields:
-        - name: dvd_folder
+        - name: dvd_path
           type: text
           label: DVD path
           value: "/dev/sdr0"
