@@ -58,7 +58,7 @@ class VlcPlayer(CommonPlaySkill):
                     track_path = Path(dirpath)
                     track_path = track_path / file
                     lists = self.vlc_add_track_to_list(str(track_path.resolve()), lists, list_name)
-                    self.speak("Track : " + str(track_path.resolve()) )
+                    
         return lists
 
     def vlc_start_track(self, data, other):
@@ -69,7 +69,7 @@ class VlcPlayer(CommonPlaySkill):
 
     def vlc_add_track_to_list(self, track, lists, list_name):
         if list_name in lists:
-            lists[list_name] = self.instance.media_new(track)
+            lists[list_name].add_media(self.instance.media_new(track))
         return lists
 
     def vlc_remove_track_from_list(self, track, list):
