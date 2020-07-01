@@ -26,7 +26,7 @@ class VlcPlayer(CommonPlaySkill):
         # add current track list 
         self.track_lists = {}
         self.track_lists = self.vlc_add_list_to_lists(self.track_lists, self.list_name["default"])
-        self.track_lists = self.vlc_add_local_folder_to_list('/home/jsauwen/Musik',self.track_lists,self.list_name["default"])
+        self.track_lists = self.vlc_add_local_folder_to_list('/home/jsauwen/Musik', self.track_lists, self.list_name["default"])
         self.list_player.set_media_list(self.track_lists[self.list_name["default"]])
         # events
         self.vlc_events = self.player.event_manager()
@@ -58,6 +58,7 @@ class VlcPlayer(CommonPlaySkill):
                     track_path = Path(dirpath)
                     track_path = track_path / file
                     lists = self.vlc_add_track_to_list(str(track_path.resolve()), lists, list_name)
+                    self.speak("Track : " + str(track_path.resolve()) )
         return lists
 
     def vlc_start_track(self, data, other):
@@ -73,7 +74,7 @@ class VlcPlayer(CommonPlaySkill):
 
     def vlc_remove_track_from_list(self, track, list):
         pass
-    
+
     def vlc_play(self):
         self.speak(str(self.track_lists))
         self.list_player.play()
