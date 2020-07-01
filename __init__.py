@@ -106,7 +106,7 @@ class VlcPlayer(CommonPlaySkill):
                     track_path = track_path / file
                     self.speak(str(track_path.resolve()))
                     lists = self.vlc_add_track_to_list(str(track_path.resolve()), lists, list_name)
-        self.speak(str(folder))       
+        self.speak(str(list_name))       
         return lists
 
     def vlc_start_track(self, data, other):
