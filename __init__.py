@@ -71,7 +71,6 @@ class VlcPlayer(CommonPlaySkill):
         }
 
     def add_standard_lists(self):
-        self.speak(str(self.settings))
         for config_name in self.list_config:
             self.track_lists = self.vlc_add_list_to_lists(self.track_lists, self.list_config[config_name]['list'])
             
@@ -138,7 +137,7 @@ class VlcPlayer(CommonPlaySkill):
 
     def vlc_prev(self):
         if self.player.is_playing():
-            self.list_player.prev()
+            self.list_player.previous()
         pass
 
     def vlc_pause(self):
@@ -148,7 +147,7 @@ class VlcPlayer(CommonPlaySkill):
 
 
     def vlc_resume(self):
-        if self.player.is_playing():
+        if not self.player.is_playing():
             self.list_player.resume()
         pass
 
