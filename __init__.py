@@ -73,8 +73,9 @@ class VlcPlayer(CommonPlaySkill):
 
     def vlc_remove_track_from_list(self, track, list):
         pass
-
+    
     def vlc_play(self):
+        self.speak(str(self.track_lists))
         self.list_player.play()
         pass
 
