@@ -15,19 +15,21 @@ class VlcPlayer(CommonPlaySkill):
     def initialize(self): 
         super().initialize()
         self.instance = vlc.Instance()
-        # default track lists
-        self.list_name = {}
-        self.list_name["default"] = "_default"
+        # configurations
+        self.list_config = {}
+        self.init_config
+
         # list player
         self.list_player = self.instance.media_list_player_new()
         # player
         self.player = self.instance.media_player_new()
         self.list_player.set_media_player(self.player)
-        # add current track list 
+        # add standard lists & set default list
         self.track_lists = {}
-        self.track_lists = self.vlc_add_list_to_lists(self.track_lists, self.list_name["default"])
-        self.track_lists = self.vlc_add_local_folder_to_list('/home/jsauwen/Musik', self.track_lists, self.list_name["default"])
-        self.list_player.set_media_list(self.track_lists[self.list_name["default"]])
+        self.add_standard_lists()
+        self.set_default_list()
+        
+
         # vlc events
         self.vlc_events = self.player.event_manager()
         self.vlc_list_events = self.list_player.event_manager()
@@ -39,6 +41,42 @@ class VlcPlayer(CommonPlaySkill):
         self.add_event('mycroft.audio.service.pause', self.vlc_pause)
         self.add_event('mycroft.audio.service.resume', self.vlc_resume)
         self.add_event('mycroft.audio.service.stop', self.vlc_stop)
+    
+    def init_config(self):
+        # default track lists
+        # default audio list
+        self.list_config["audio"] = { 
+            'list': '_audio',
+            'path_setting': 'audio_path'
+        }
+        # default video list
+        self.list_config["video"] = { 
+            'list': '_video',
+            'path_setting': 'video_path'
+        }
+        # default playlist list
+        self.list_config["playlist"] = { 
+            'list': '_playlist',
+            'path_setting': 'playlist_path'
+        }
+        # default cd list
+        self.list_config["cd"] = { 
+            'list': '_cd',
+            'path_setting': 'cd_path'
+        }
+        # default dvd list
+        self.list_config["dvd"] = { 
+            'list': '_dvd',
+            'path_setting': 'dvd_path'
+        }
+
+    def add_standard_lists(self):
+        for config_name in self.list_config.keys:
+            self.track_lists = self.vlc_add_list_to_lists(self.track_lists, self.list_config[config_name]['list'])
+            self.track_lists = self.vlc_add_local_folder_to_list(self.settings.get(self.list_config[config_name]['list']), self.track_lists, self.list_config[config_name]['list'])
+
+    def set_default_list(self):
+        self.list_player.set_media_list(self.track_lists[self.list_config['audio']['list']])        
 
     def CPS_match_query_phrase(self, phrase):
         level = CPSMatchLevel.GENERIC

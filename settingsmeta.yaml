@@ -1,13 +1,41 @@
 
 skillMetadata:
   sections:
-    - name: Options << Name of section
+    - name: Audio Folder
       fields:
-        - name: internal_python_variable_name
+        - name: audio_folder
           type: text
-          label: Setting Friendly Display Name
-          value: ""
-          placeholder: demo prompt in the input box
+          label: Audio folder
+          value: "~/Musik"
+          placeholder: this folder contains the audio files
+    - name: Playlists folder
+      fields:
+        - name: playlist_folder
+          type: text
+          label: playlist folder
+          value: "~/playlists"
+          placeholder: this folder contains the playlists files
+    - name: Video Folder
+      fields:
+        - name: video_folder
+          type: text
+          label: Video folder
+          value: "~/Videos"
+          placeholder: this folder to the video files
+    - name: path to CD
+      fields:
+        - name: cd_folder
+          type: text
+          label: CD path
+          value: "/dev/sdr0"
+          placeholder: this is the path to the CD device
+    - name: path to DVD
+      fields:
+        - name: dvd_folder
+          type: text
+          label: DVD path
+          value: "/dev/sdr0"
+          placeholder: this is the path to the DVD device
     - name: Login << Name of another section
       fields:
         - type: label
