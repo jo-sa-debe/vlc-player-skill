@@ -6,7 +6,7 @@ skillMetadata:
         - name: audio_path
           type: text
           label: Audio folder
-          value: "~/Musik"
+          value: "/home/jsauwen/Musik"
           placeholder: this folder contains the audio files
     - name: Playlists folder
       fields:
