@@ -81,10 +81,8 @@ class VlcPlayer(CommonPlaySkill):
 
     def CPS_match_query_phrase(self, phrase):
         level = CPSMatchLevel.GENERIC
-        if phrase == "vlc-player":
+        if phrase == "vlc-player" or phrase == "vlc":
             self.speak("query phrase : handled by vlc-player")
-        else:
-            self.speak("query phrase : " + str(phrase))
         return (phrase, level)
 
     def CPS_start(self, phrase, data):
@@ -121,6 +119,7 @@ class VlcPlayer(CommonPlaySkill):
         pass
 
     def vlc_play(self):
+        self.speak(str(self.track_lists))
         self.list_player.play()
         pass
 
