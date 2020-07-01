@@ -73,7 +73,8 @@ class VlcPlayer(CommonPlaySkill):
     def add_standard_lists(self):
         for config_name in self.list_config:
             self.track_lists = self.vlc_add_list_to_lists(self.track_lists, self.list_config[config_name]['list'])
-            location = str(self.settings.get(str(self.list_config[config_name]['path_setting'])))
+            #location = str(self.settings.get(str(self.list_config[config_name]['path_setting'])))
+            location = str(self.settings.get('audio_path'))
             self.speak(location)
             self.track_lists = self.vlc_add_local_folder_to_list(location, self.track_lists, self.list_config[config_name]['list'])
 
