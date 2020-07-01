@@ -101,13 +101,11 @@ class VlcPlayer(CommonPlaySkill):
         
         if list_name in lists: 
             for dirpath, dirnames, filenames in os.walk(folder):
-                self.speak("folder : " + str(dirpath) + " " + str(dirnames) + " " + str(filenames) )
                 for file in filenames:
                     track_path = Path(dirpath)
                     track_path = track_path / file
                     self.speak(str(track_path.resolve()))
-                    lists = self.vlc_add_track_to_list(str(track_path.resolve()), lists, list_name)
-        self.speak(str(list_name))       
+                    lists = self.vlc_add_track_to_list(str(track_path.resolve()), lists, list_name)    
         return lists
 
     def vlc_start_track(self, data, other):
