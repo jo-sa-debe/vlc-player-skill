@@ -71,10 +71,12 @@ class VlcPlayer(CommonPlaySkill):
         }
 
     def add_standard_lists(self):
+        self.speak(str(self.settings))
         for config_name in self.list_config:
             self.track_lists = self.vlc_add_list_to_lists(self.track_lists, self.list_config[config_name]['list'])
             #location = str(self.settings.get(str(self.list_config[config_name]['path_setting'])))
             self.speak(self.list_config[config_name]['path_setting'])
+            
             if self.list_config[config_name]['path_setting'] in self.settings:
                 self.speak("setting " + self.list_config[config_name]['path_setting'] + " found" )
                 location = Path(str(self.settings[self.list_config[config_name]['path_setting']]))
