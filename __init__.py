@@ -97,11 +97,12 @@ class VlcPlayer(CommonPlaySkill):
     def vlc_add_local_folder_to_list(self, folder, lists, list_name):
           
         if list_name in lists:
+            self.speak(folder)  
             for dirpath, dirnames, filenames in os.walk(folder):
                 for file in filenames:
                     track_path = Path(dirpath)
                     track_path = track_path / file
-                    self.speak(track_path)  
+                    
                     lists = self.vlc_add_track_to_list(str(track_path.resolve()), lists, list_name)
                 
         return lists
