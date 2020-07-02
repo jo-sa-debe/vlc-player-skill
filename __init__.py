@@ -179,7 +179,9 @@ class VlcPlayer(CommonPlaySkill):
             tracklist = self.vlc_get_list_from_lists(data.get('playlist'))
         else:
             tracklist = self.vlc_get_current_playlist()
-        
+        tracks = self.track_lists.get(tracklist)
+        for track in tracks:
+            pass
         meta = vlc.Meta
 
 
