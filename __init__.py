@@ -134,7 +134,7 @@ class VlcPlayer(CommonPlaySkill):
     #--------------------------------------------
 
     def vlc_play(self):
-        self.speak(str(self.track_lists))
+        self.speak("Playing playlist : " + self.vlc_get_current_playlist())
         self.list_player.play()
         pass
 
