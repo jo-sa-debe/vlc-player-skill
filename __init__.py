@@ -37,11 +37,13 @@ class VlcPlayer(CommonPlaySkill):
         self.vlc_events.event_attach(vlc.EventType.MediaPlayerPlaying, self.vlc_start_track, 1)
         self.vlc_list_events.event_attach(vlc.EventType.MediaListPlayerPlayed, self.vlc_queue_ended, 0)
         # mycroft events
+        self.add_event('mycroft.stop', self.skill_stop)
         self.add_event('mycroft.audio.service.next', self.vlc_next)
         self.add_event('mycroft.audio.service.prev', self.vlc_prev)
         self.add_event('mycroft.audio.service.pause', self.vlc_pause)
         self.add_event('mycroft.audio.service.resume', self.vlc_resume)
         self.add_event('mycroft.audio.service.stop', self.vlc_stop)
+        self.add_event('mycroft.audio.service.track_info', self.vlc_track_info)
     
     def init_config(self):
         # standard track lists : standard track list names start with "_"
@@ -129,6 +131,13 @@ class VlcPlayer(CommonPlaySkill):
     def vlc_queue_ended(self, data, other):
         pass
 
+    # General control
+    #--------------------------------------------
+
+    def skill_stop(self, message):
+        self.stop()
+
+
 
     # Playback control
     #--------------------------------------------
@@ -160,9 +169,66 @@ class VlcPlayer(CommonPlaySkill):
 
 
     def vlc_resume(self):
+        """
+        resume playback
+
+          Args:
+                none
+        """
         if not self.player.is_playing():
             self.list_player.play()
         pass
+
+    def vlc_seek_forward(self, seconds=1):
+        """
+        skip X seconds
+
+          Args:
+                seconds (int): number of seconds to seek, if negative rewind
+        """
+        seconds = seconds * 1000
+        new_time = self.player.get_time() + seconds
+        duration = self.player.get_length()
+        if new_time > duration:
+            new_time = duration
+        self.player.set_time(new_time)
+
+    def vlc_seek_backward(self, seconds=1):
+        """
+        rewind X seconds
+
+          Args:
+                seconds (int): number of seconds to seek, if negative rewind
+        """
+        seconds = seconds * 1000
+        new_time = self.player.get_time() - seconds
+        if new_time < 0:
+            new_time = 0
+        self.player.set_time(new_time)
+
+    # Track info
+    #-------------------------------------------- 
+    def vlc_get_track_info(self, track=None):
+        track_info = {}
+        if not track:
+            track = self.player.get_media()
+        meta = vlc.Meta
+        track_info['album'] = track.get_meta(meta.Album) 
+        track_info['artist'] = track.get_meta(meta.Artist) 
+        track_info['title'] = track.get_meta(meta.Title) 
+        track_info['trackid'] = track.get_meta(meta.TrackID) 
+        track_info['tracknumber'] = track.get_meta(meta.TrackNumber) 
+        track_info['tracktotal'] = track.get_meta(meta.TrackTotal) 
+        track_info['genre'] = track.get_meta(meta.Genre) 
+        return track_info
+
+    def vlc_track_info(self):
+        track_info = self.vlc_get_track_info()
+        if track_info:
+            if str(track_info.get('title')):
+                self.speak(str(track_info.get('title')))
+            if str(track_info.get('artist')):
+                self.speak(str(track_info.get('artist')))
 
     # Search tools
     #-------------------------------------------- 
