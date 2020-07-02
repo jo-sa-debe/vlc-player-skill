@@ -161,7 +161,7 @@ class VlcPlayer(CommonPlaySkill):
 
     def vlc_resume(self):
         if not self.player.is_playing():
-            self.list_player.resume()
+            self.list_player.play()
         pass
 
     # Search tools
