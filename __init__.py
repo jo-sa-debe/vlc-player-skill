@@ -15,6 +15,7 @@ class VlcPlayer(CommonPlaySkill):
     def initialize(self): 
         super().initialize()
         self.instance = vlc.Instance()
+        self.current_list = ''
         # configurations
         self.list_config = {}
         self.init_config()
@@ -27,7 +28,7 @@ class VlcPlayer(CommonPlaySkill):
         # add standard lists & set default list
         self.track_lists = {}
         self.add_standard_lists()
-        self.set_default_list()
+        self.vlc_set_default_list()
         
 
         # vlc events
@@ -43,7 +44,7 @@ class VlcPlayer(CommonPlaySkill):
         self.add_event('mycroft.audio.service.stop', self.vlc_stop)
     
     def init_config(self):
-        # default track lists
+        # standard track lists : standard track list names start with "_"
         # default audio list
         self.list_config["audio"] = { 
             'list': '_audio',
@@ -70,6 +71,8 @@ class VlcPlayer(CommonPlaySkill):
             'path_setting': 'dvd_path'
         }
 
+    # List tools
+    #--------------------------------------------
     def add_standard_lists(self):
         for config_name in self.list_config:
             self.track_lists = self.vlc_add_list_to_lists(self.track_lists, self.list_config[config_name]['list'])
@@ -77,20 +80,24 @@ class VlcPlayer(CommonPlaySkill):
             if self.list_config[config_name]['path_setting'] in self.settings:
                 location = Path(str(self.settings[self.list_config[config_name]['path_setting']]))
                 self.track_lists = self.vlc_add_local_folder_to_list(location, self.track_lists, self.list_config[config_name]['list'])
+    
+    def vlc_get_list_from_lists(self, list_name):
+        if list_name in self.track_lists:
+            return self.track_lists.get(list_name)
+        else:
+            return False
+    
+    def vlc_set_current_playlist(self, list_name):
+        if list_name in self.track_lists:
+            self.list_player.set_media_list(self.track_lists[list_name])
+            self.current_list = list_name
+        return self.current_list
 
-    def set_default_list(self):
-        self.list_player.set_media_list(self.track_lists[self.list_config['audio']['list']])        
+    def vlc_get_current_playlist(self):
+        return self.current_list
 
-    def CPS_match_query_phrase(self, phrase):
-        level = CPSMatchLevel.GENERIC
-        if phrase == "vlc-player" or phrase == "vlc":
-            self.speak("query phrase : handled by vlc-player")
-        return (phrase, level)
-
-    def CPS_start(self, phrase, data):
-        self.speak("start phrase : " + str(phrase))
-        self.vlc_play()
-        pass
+    def vlc_set_default_list(self):
+        self.vlc_set_current_playlist(self.list_config['audio']['list'])     
 
     def vlc_add_list_to_lists(self, lists, list_name):
         lists[list_name] = self.instance.media_list_new()
@@ -106,11 +113,6 @@ class VlcPlayer(CommonPlaySkill):
                     lists = self.vlc_add_track_to_list(str(track_path.resolve()), lists, list_name)    
         return lists
 
-    def vlc_start_track(self, data, other):
-        pass
-
-    def vlc_queue_ended(self, data, other):
-        pass
 
     def vlc_add_track_to_list(self, track, lists, list_name):
         if list_name in lists:
@@ -119,6 +121,17 @@ class VlcPlayer(CommonPlaySkill):
 
     def vlc_remove_track_from_list(self, track, list):
         pass
+
+
+    def vlc_start_track(self, data, other):
+        pass
+
+    def vlc_queue_ended(self, data, other):
+        pass
+
+
+    # Playback control
+    #--------------------------------------------
 
     def vlc_play(self):
         self.speak(str(self.track_lists))
@@ -151,7 +164,37 @@ class VlcPlayer(CommonPlaySkill):
             self.list_player.resume()
         pass
 
+    # Search tools
+    #-------------------------------------------- 
 
+    def vlc_search(self, data):
+        data = { 
+            'playlist' : '_audio',
+            'artist' : '',
+            'album' : '',
+            'title' : ''
+        }
+        # get playlist tracks
+        if 'playlist' in data:
+            tracklist = self.vlc_get_list_from_lists(data.get('playlist'))
+        else:
+            tracklist = self.vlc_get_current_playlist()
+        
+        meta = vlc.Meta
+
+
+    # Common Playback Skill methods
+    #--------------------------------------------  
+    def CPS_match_query_phrase(self, phrase):
+        level = CPSMatchLevel.GENERIC
+        if phrase == "vlc-player" or phrase == "vlc":
+            self.speak("query phrase : handled by vlc-player")
+        return (phrase, level)
+
+    def CPS_start(self, phrase, data):
+        self.speak("start phrase : " + str(phrase))
+        self.vlc_play()
+        pass
 
 def create_skill():
     return VlcPlayer()
