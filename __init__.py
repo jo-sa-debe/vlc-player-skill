@@ -221,12 +221,14 @@ class VlcPlayer(CommonPlaySkill):
         return track_info
 
     def vlc_track_info(self):
-        track_info = self.vlc_get_track_info(self.player.get_media())
-        if track_info:
-            if str(track_info.get('title')):
-                self.speak(str(track_info.get('title')))
-            if str(track_info.get('artist')):
-                self.speak(str(track_info.get('artist')))
+        current_track = self.player.get_media()
+        if current_track:
+            track_info = self.vlc_get_track_info(current_track)
+            if track_info:
+                if str(track_info.get('title')):
+                    self.speak(str(track_info.get('title')))
+                if str(track_info.get('artist')):
+                    self.speak(str(track_info.get('artist')))
 
     # Search tools
     #-------------------------------------------- 
