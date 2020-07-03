@@ -217,7 +217,7 @@ class VlcPlayer(CommonPlaySkill):
         meta = vlc.Meta
         if track:
             
-            track.parse_with_options(self.vlc_parse_flag, self.vlc_parse_timeout)
+            track.parse_with_options(self.vlc_parse_flag)
             track_info['album'] = track.get_meta(meta.Album) 
             track_info['artist'] = track.get_meta(meta.Artist) 
             track_info['title'] = track.get_meta(meta.Title) 
