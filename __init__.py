@@ -165,12 +165,13 @@ class VlcPlayer(CommonPlaySkill):
     def vlc_prev(self):
         if self.player.is_playing():
             self.list_player.previous()
+            self.bus.emit(Message('mycroft.audio.service.track_info'))
         pass
 
     def vlc_pause(self):
         if self.player.is_playing():
             self.list_player.pause()
-            self.bus.emit(Message('mycroft.audio.service.track_info'))
+            
         pass
 
 
