@@ -159,6 +159,7 @@ class VlcPlayer(CommonPlaySkill):
     def vlc_next(self):
         if self.player.is_playing():
             self.list_player.next()
+            self.bus.emit(Message('mycroft.audio.service.track_info'))
         pass
 
     def vlc_prev(self):
@@ -169,6 +170,7 @@ class VlcPlayer(CommonPlaySkill):
     def vlc_pause(self):
         if self.player.is_playing():
             self.list_player.pause()
+            self.bus.emit(Message('mycroft.audio.service.track_info'))
         pass
 
 
@@ -181,6 +183,7 @@ class VlcPlayer(CommonPlaySkill):
         """
         if not self.player.is_playing():
             self.list_player.play()
+            self.bus.emit(Message('mycroft.audio.service.track_info'))
         pass
 
     def vlc_seek_forward(self, seconds=1):
@@ -233,6 +236,10 @@ class VlcPlayer(CommonPlaySkill):
         current_track = self.player.get_media()
         if current_track:
             track_info = self.vlc_get_track_info(current_track)
+            if track_info.get('title'):
+                self.speak("Title : " + track_info.get('title'))
+            if track_info.get('artist'):
+                self.speak("Artist : " + track_info.get('artist'))
             # if track_info:
             #     if str(track_info.get('title')):
             #         self.speak(str(track_info.get('title')))
