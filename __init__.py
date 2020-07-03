@@ -16,6 +16,10 @@ class VlcPlayer(CommonPlaySkill):
         super().initialize()
         self.instance = vlc.Instance()
         self.current_list = ''
+
+        # vlc settings
+        self.vlc_parse_flag = vlc.MediaParseFlag.local
+        self.vlc_parse_timeout = -1 # = default vlc settings
         # configurations
         self.list_config = {}
         self.init_config()
@@ -37,7 +41,7 @@ class VlcPlayer(CommonPlaySkill):
         self.vlc_events.event_attach(vlc.EventType.MediaPlayerPlaying, self.vlc_start_track, 1)
         self.vlc_list_events.event_attach(vlc.EventType.MediaListPlayerPlayed, self.vlc_queue_ended, 0)
         # mycroft events
-        self.add_event('mycroft.stop', self.skill_stop)
+        #self.add_event('mycroft.stop', self.skill_stop)
         self.add_event('mycroft.audio.service.next', self.vlc_next)
         self.add_event('mycroft.audio.service.prev', self.vlc_prev)
         self.add_event('mycroft.audio.service.pause', self.vlc_pause)
@@ -211,13 +215,18 @@ class VlcPlayer(CommonPlaySkill):
     def vlc_get_track_info(self, track):
         track_info = {}
         meta = vlc.Meta
-        track_info['album'] = track.get_meta(meta.Album) 
-        track_info['artist'] = track.get_meta(meta.Artist) 
-        track_info['title'] = track.get_meta(meta.Title) 
-        track_info['trackid'] = track.get_meta(meta.TrackID) 
-        track_info['tracknumber'] = track.get_meta(meta.TrackNumber) 
-        track_info['tracktotal'] = track.get_meta(meta.TrackTotal) 
-        track_info['genre'] = track.get_meta(meta.Genre) 
+        if track:
+            
+            track.parse_with_options(self.vlc_parse_flag, self.vlc_parse_timeout)
+            track_info['album'] = track.get_meta(meta.Album) 
+            track_info['artist'] = track.get_meta(meta.Artist) 
+            track_info['title'] = track.get_meta(meta.Title) 
+            track_info['trackid'] = track.get_meta(meta.TrackID) 
+            track_info['tracknumber'] = track.get_meta(meta.TrackNumber) 
+            track_info['tracktotal'] = track.get_meta(meta.TrackTotal) 
+            track_info['genre'] = track.get_meta(meta.Genre) 
+            track_info['duration'] = track.get_duration()
+            track_info['type'] = track.get_type()
         return track_info
 
     def vlc_track_info(self):
