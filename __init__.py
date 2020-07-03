@@ -208,10 +208,8 @@ class VlcPlayer(CommonPlaySkill):
 
     # Track info
     #-------------------------------------------- 
-    def vlc_get_track_info(self, track=None):
+    def vlc_get_track_info(self, track):
         track_info = {}
-        if not track:
-            track = self.player.get_media()
         meta = vlc.Meta
         track_info['album'] = track.get_meta(meta.Album) 
         track_info['artist'] = track.get_meta(meta.Artist) 
@@ -223,7 +221,7 @@ class VlcPlayer(CommonPlaySkill):
         return track_info
 
     def vlc_track_info(self):
-        track_info = self.vlc_get_track_info()
+        track_info = self.vlc_get_track_info(self.player.get_media())
         if track_info:
             if str(track_info.get('title')):
                 self.speak(str(track_info.get('title')))
