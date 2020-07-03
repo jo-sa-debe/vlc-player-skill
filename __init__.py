@@ -233,11 +233,12 @@ class VlcPlayer(CommonPlaySkill):
         current_track = self.player.get_media()
         if current_track:
             track_info = self.vlc_get_track_info(current_track)
-            if track_info:
-                if str(track_info.get('title')):
-                    self.speak(str(track_info.get('title')))
-                if str(track_info.get('artist')):
-                    self.speak(str(track_info.get('artist')))
+            # if track_info:
+            #     if str(track_info.get('title')):
+            #         self.speak(str(track_info.get('title')))
+            #     if str(track_info.get('artist')):
+            #         self.speak(str(track_info.get('artist')))
+            return track_info
 
     # Search tools
     #-------------------------------------------- 
