@@ -65,7 +65,7 @@ class VlcPlayer(CommonPlaySkill):
     def register_vlc_player_events(self):
         self.vlc_events = self.player.event_manager()
         self.vlc_events.event_attach(vlc.EventType.MediaPlayerPlaying, self.vlc_start_track, 1)
-        self.vlc_events.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.vlc_track_changed, 0)
+        self.vlc_events.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.vlc_track_changed, 1)
         pass
 
     def init_config(self):
