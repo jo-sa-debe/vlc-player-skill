@@ -41,6 +41,16 @@ class VlcPlayer(CommonPlaySkill):
         self.vlc_events.event_attach(vlc.EventType.MediaPlayerPlaying, self.vlc_start_track, 1)
         self.vlc_list_events.event_attach(vlc.EventType.MediaListPlayerPlayed, self.vlc_queue_ended, 0)
         # mycroft events
+        self.register_player_control_events
+        # skill intents
+        self.register_intents
+
+
+    def register_intents(self):
+        self.register_intent_file('player.trackinfo.intent', self.vlc_track_info)
+        pass
+
+    def register_player_control_events(self):
         #self.add_event('mycroft.stop', self.skill_stop)
         self.add_event('mycroft.audio.service.next', self.vlc_next)
         self.add_event('mycroft.audio.service.prev', self.vlc_prev)
@@ -48,6 +58,7 @@ class VlcPlayer(CommonPlaySkill):
         self.add_event('mycroft.audio.service.resume', self.vlc_resume)
         self.add_event('mycroft.audio.service.stop', self.vlc_stop)
         self.add_event('mycroft.audio.service.track_info', self.vlc_track_info)
+
     
     def init_config(self):
         # standard track lists : standard track list names start with "_"
