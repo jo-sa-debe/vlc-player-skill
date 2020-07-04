@@ -60,6 +60,7 @@ class VlcPlayer(CommonPlaySkill):
     def register_vlc_list_player_events(self):
         self.vlc_list_events = self.list_player.event_manager()
         self.vlc_list_events.event_attach(vlc.EventType.MediaListPlayerPlayed, self.vlc_queue_ended, 0)
+        self.vlc_list_events.event_attach(vlc.EventType.MediaListEndReached, self.vlc_track_list_ended, 0)
         pass
 
     def register_vlc_player_events(self):
@@ -159,8 +160,7 @@ class VlcPlayer(CommonPlaySkill):
     # VLC events
     #--------------------------------------------
 
-    def vlc_track_changed(self, event, par1):
-        self.speak("par " + str(par1))
+    def vlc_track_changed(self, data, other):
         self.bus.emit(Message('mycroft.audio.service.track_info'))
 
     def vlc_start_track(self, data, other):
@@ -169,7 +169,8 @@ class VlcPlayer(CommonPlaySkill):
     def vlc_queue_ended(self, data, other):
         pass
 
-
+    def vlc_track_list_ended(self, data, other):
+        pass
 
     # Playback control / Mycroft events
     #--------------------------------------------
@@ -265,7 +266,8 @@ class VlcPlayer(CommonPlaySkill):
             track_info['type'] = track.get_type()
         return track_info
 
-    def vlc_track_info(self):
+    def vlc_track_info(self, message):
+        self.speak("track info : " + str(message))
         current_track = self.player.get_media()
         if current_track:
             track_info = self.vlc_get_track_info(current_track)
