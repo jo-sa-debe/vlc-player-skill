@@ -160,6 +160,7 @@ class VlcPlayer(CommonPlaySkill):
     #--------------------------------------------
 
     def vlc_track_changed(self, event, par1):
+        self.speak("par " + str(par1))
         self.bus.emit(Message('mycroft.audio.service.track_info'))
 
     def vlc_start_track(self, data, other):
