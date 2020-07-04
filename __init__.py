@@ -36,12 +36,10 @@ class VlcPlayer(CommonPlaySkill):
         
 
         # vlc events
-        self.vlc_events = self.player.event_manager()
-        self.vlc_list_events = self.list_player.event_manager()
-        self.vlc_events.event_attach(vlc.EventType.MediaPlayerPlaying, self.vlc_start_track, 1)
-        self.vlc_list_events.event_attach(vlc.EventType.MediaListPlayerPlayed, self.vlc_queue_ended, 0)
+        self.register_vlc_player_events()
+        self.register_vlc_list_player_events()        
         # mycroft events
-        self.register_player_control_events()
+        self.register_mycroft_player_control_events()
         # skill intents
         self.register_intents()
 
@@ -50,7 +48,7 @@ class VlcPlayer(CommonPlaySkill):
         self.register_intent_file('player.trackinfo.intent', self.vlc_track_info)
         pass
 
-    def register_player_control_events(self):
+    def register_mycroft_player_control_events(self):
         self.add_event('mycroft.stop', self.skill_stop)
         self.add_event('mycroft.audio.service.next', self.vlc_next)
         self.add_event('mycroft.audio.service.prev', self.vlc_prev)
@@ -59,7 +57,17 @@ class VlcPlayer(CommonPlaySkill):
         self.add_event('mycroft.audio.service.stop', self.vlc_stop)
         self.add_event('mycroft.audio.service.track_info', self.vlc_track_info)
 
-    
+    def register_vlc_list_player_events(self):
+        self.vlc_list_events = self.list_player.event_manager()
+        self.vlc_list_events.event_attach(vlc.EventType.MediaListPlayerPlayed, self.vlc_queue_ended, 0)
+        pass
+
+    def register_vlc_player_events(self):
+        self.vlc_events = self.player.event_manager()
+        self.vlc_events.event_attach(vlc.EventType.MediaPlayerPlaying, self.vlc_start_track, 1)
+        self.vlc_events.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.vlc_track_changed, 0)
+        pass
+
     def init_config(self):
         # standard track lists : standard track list names start with "_"
         # default audio list
@@ -140,12 +148,6 @@ class VlcPlayer(CommonPlaySkill):
         pass
 
 
-    def vlc_start_track(self, data, other):
-        pass
-
-    def vlc_queue_ended(self, data, other):
-        pass
-
     # General control
     #--------------------------------------------
 
@@ -154,9 +156,21 @@ class VlcPlayer(CommonPlaySkill):
         self.vlc_stop(message)
         self.stop()
 
+    # VLC events
+    #--------------------------------------------
+
+    def vlc_track_changed(self):
+        self.bus.emit(Message('mycroft.audio.service.track_info'))
+
+    def vlc_start_track(self, data, other):
+        pass
+
+    def vlc_queue_ended(self, data, other):
+        pass
 
 
-    # Playback control
+
+    # Playback control / Mycroft events
     #--------------------------------------------
 
     def vlc_play(self, message):
@@ -177,13 +191,11 @@ class VlcPlayer(CommonPlaySkill):
     def vlc_next(self, message):
         if self.player.is_playing():
             self.list_player.next()
-            self.bus.emit(Message('mycroft.audio.service.track_info'))
         pass
 
     def vlc_prev(self, message):
         if self.player.is_playing():
             self.list_player.previous()
-            self.bus.emit(Message('mycroft.audio.service.track_info'))
         pass
 
     def vlc_pause(self, message):
@@ -230,6 +242,8 @@ class VlcPlayer(CommonPlaySkill):
         if new_time < 0:
             new_time = 0
         self.player.set_time(new_time)
+
+
 
     # Track info
     #-------------------------------------------- 
