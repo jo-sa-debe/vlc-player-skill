@@ -41,9 +41,9 @@ class VlcPlayer(CommonPlaySkill):
         self.vlc_events.event_attach(vlc.EventType.MediaPlayerPlaying, self.vlc_start_track, 1)
         self.vlc_list_events.event_attach(vlc.EventType.MediaListPlayerPlayed, self.vlc_queue_ended, 0)
         # mycroft events
-        self.register_player_control_events
+        self.register_player_control_events()
         # skill intents
-        self.register_intents
+        self.register_intents()
 
 
     def register_intents(self):
