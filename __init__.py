@@ -150,6 +150,7 @@ class VlcPlayer(CommonPlaySkill):
     #--------------------------------------------
 
     def skill_stop(self, message):
+        self.speak("Stop skill : " + str(message))
         self.vlc_stop(message)
         self.stop()
 
@@ -168,6 +169,7 @@ class VlcPlayer(CommonPlaySkill):
         pass
 
     def vlc_stop(self, message):
+        self.speak("Stop VLC : " + str(message))
         if self.player.is_playing():
             self.list_player.pause(message)
             #self.list_player.stop()
