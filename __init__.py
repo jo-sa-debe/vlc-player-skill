@@ -150,6 +150,7 @@ class VlcPlayer(CommonPlaySkill):
     #--------------------------------------------
 
     def skill_stop(self, message):
+        self.vlc_stop(message)
         self.stop()
 
 
@@ -157,36 +158,36 @@ class VlcPlayer(CommonPlaySkill):
     # Playback control
     #--------------------------------------------
 
-    def vlc_play(self):
+    def vlc_play(self, message):
         self.speak("Playing playlist : " + self.vlc_get_current_playlist())
         self.list_player.play()
         pass
 
-    def vlc_stop(self):
+    def vlc_stop(self, message):
         if self.player.is_playing():
             self.list_player.stop()
         pass
 
-    def vlc_next(self):
+    def vlc_next(self, message):
         if self.player.is_playing():
             self.list_player.next()
             self.bus.emit(Message('mycroft.audio.service.track_info'))
         pass
 
-    def vlc_prev(self):
+    def vlc_prev(self, message):
         if self.player.is_playing():
             self.list_player.previous()
             self.bus.emit(Message('mycroft.audio.service.track_info'))
         pass
 
-    def vlc_pause(self):
+    def vlc_pause(self, message):
         if self.player.is_playing():
             self.list_player.pause()
             
         pass
 
 
-    def vlc_resume(self):
+    def vlc_resume(self, message):
         """
         resume playback
 
@@ -288,8 +289,8 @@ class VlcPlayer(CommonPlaySkill):
             self.speak("phrase : " + str(phrase) + " by vlc-player")
         return (phrase, level)
 
-    def CPS_start(self, phrase, data):
-        self.vlc_play()
+    def CPS_start(self, message, data):
+        self.vlc_play(message)
         pass
 
 def create_skill():
