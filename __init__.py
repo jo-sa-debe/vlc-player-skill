@@ -171,8 +171,7 @@ class VlcPlayer(CommonPlaySkill):
     def vlc_stop(self, message):
         self.speak("Stop VLC : " + str(message))
         if self.player.is_playing():
-            self.list_player.pause(message)
-            #self.list_player.stop()
+            self.list_player.stop()
         pass
 
     def vlc_next(self, message):
@@ -189,8 +188,7 @@ class VlcPlayer(CommonPlaySkill):
 
     def vlc_pause(self, message):
         if self.player.is_playing():
-            self.list_player.pause()
-            
+            self.list_player.pause()    
         pass
 
 
