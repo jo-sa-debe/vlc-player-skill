@@ -51,7 +51,7 @@ class VlcPlayer(CommonPlaySkill):
         pass
 
     def register_player_control_events(self):
-        #self.add_event('mycroft.stop', self.skill_stop)
+        self.add_event('mycroft.stop', self.skill_stop)
         self.add_event('mycroft.audio.service.next', self.vlc_next)
         self.add_event('mycroft.audio.service.prev', self.vlc_prev)
         self.add_event('mycroft.audio.service.pause', self.vlc_pause)
