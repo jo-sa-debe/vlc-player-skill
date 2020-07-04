@@ -162,7 +162,11 @@ class VlcPlayer(CommonPlaySkill):
     #--------------------------------------------
 
     def vlc_track_changed(self, data, other):
-        self.bus.emit(Message('mycroft.audio.service.track_info'))
+        context = {}
+        context['source'] = self.name
+        context['destination'] = self.name
+        data = {}
+        self.bus.emit(Message('mycroft.audio.service.track_info', data, context))
 
     def vlc_start_track(self, data, other):
         pass
@@ -268,15 +272,17 @@ class VlcPlayer(CommonPlaySkill):
         return track_info
 
     def handler_mycroft_vlc_track_info(self, message):
-        
-        self.speak("track info - source: " + str(message.context.get('source')) + "- dest : " + str(message.context.get('destination') ))
-        current_track = self.player.get_media()
-        if current_track:
-            track_info = self.vlc_get_track_info(current_track)
-            if track_info.get('title'):
-                self.speak("Title : " + track_info.get('title'))
-            if track_info.get('artist'):
-                self.speak("Artist : " + track_info.get('artist'))
+        context = message.get('context')
+        if context:
+            if context.get('source') == self.name and context.get('destination') == self.name:
+                self.speak("track info - source: " + str(message.context.get('source')) + "- dest : " + str(message.context.get('destination') ))
+                current_track = self.player.get_media()
+                if current_track:
+                    track_info = self.vlc_get_track_info(current_track)
+                    if track_info.get('title'):
+                        self.speak("Title : " + track_info.get('title'))
+                    if track_info.get('artist'):
+                        self.speak("Artist : " + track_info.get('artist'))
 
             #return track_info
 
