@@ -159,13 +159,18 @@ class VlcPlayer(CommonPlaySkill):
     #--------------------------------------------
 
     def vlc_play(self, message):
-        self.speak("Playing playlist : " + self.vlc_get_current_playlist())
+        player_state = self.list_player.get_state()
+        if player_state == vlc.State.Paused:
+            self.vlc_resume(message)
+        elif player_state == vlc.State.Stopped:
+            self.speak("Playing playlist : " + self.vlc_get_current_playlist())
         self.list_player.play()
         pass
 
     def vlc_stop(self, message):
         if self.player.is_playing():
-            self.list_player.stop()
+            self.list_player.pause(message)
+            #self.list_player.stop()
         pass
 
     def vlc_next(self, message):
