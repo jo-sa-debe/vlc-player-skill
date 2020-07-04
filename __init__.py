@@ -272,7 +272,7 @@ class VlcPlayer(CommonPlaySkill):
         return track_info
 
     def handler_mycroft_vlc_track_info(self, message):
-        context = message.get('context')
+        context = message.context
         if context:
             if context.get('source') == self.name and context.get('destination') == self.name:
                 self.speak("track info - source: " + str(message.context.get('source')) + "- dest : " + str(message.context.get('destination') ))
