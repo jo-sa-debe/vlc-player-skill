@@ -22,7 +22,7 @@ class VlcPlayer(CommonPlaySkill):
         self.vlc_parse_timeout = -1 # = default vlc settings
         # configurations
         self.list_config = {}
-        self.init_config()
+        self.init_lists_config()
 
         # list player
         self.list_player = self.instance.media_list_player_new()
@@ -45,18 +45,18 @@ class VlcPlayer(CommonPlaySkill):
 
 
     def register_intents(self):
-        self.register_intent_file('player.trackinfo.intent', self.vlc_track_info)
+        self.register_intent_file('player.trackinfo.intent', self.handler_mycroft_vlc_track_info)
         pass
 
     def register_mycroft_player_control_events(self):
         self.add_event('mycroft.stop', self.skill_stop)
-        self.add_event('mycroft.audio.service.play', self.vlc_play)
-        self.add_event('mycroft.audio.service.next', self.vlc_next)
-        self.add_event('mycroft.audio.service.prev', self.vlc_prev)
-        self.add_event('mycroft.audio.service.pause', self.vlc_pause)
-        self.add_event('mycroft.audio.service.resume', self.vlc_resume)
-        self.add_event('mycroft.audio.service.stop', self.vlc_stop)
-        self.add_event('mycroft.audio.service.track_info', self.vlc_track_info)
+        self.add_event('mycroft.audio.service.play', self.handler_mycroft_vlc_play)
+        self.add_event('mycroft.audio.service.next', self.handler_mycroft_vlc_next)
+        self.add_event('mycroft.audio.service.prev', self.handler_mycroft_vlc_prev)
+        self.add_event('mycroft.audio.service.pause', self.handler_mycroft_vlc_pause)
+        self.add_event('mycroft.audio.service.resume', self.handler_mycroft_vlc_resume)
+        self.add_event('mycroft.audio.service.stop', self.handler_mycroft_vlc_stop)
+        self.add_event('mycroft.audio.service.track_info', self.handler_mycroft_vlc_track_info)
 
     def register_vlc_list_player_events(self):
         self.vlc_list_events = self.list_player.event_manager()
@@ -70,7 +70,7 @@ class VlcPlayer(CommonPlaySkill):
         self.vlc_events.event_attach(vlc.EventType.MediaPlayerMediaChanged, self.vlc_track_changed, 0)
         pass
 
-    def init_config(self):
+    def init_lists_config(self):
         # standard track lists : standard track list names start with "_"
         # default audio list
         self.list_config["audio"] = { 
@@ -155,7 +155,7 @@ class VlcPlayer(CommonPlaySkill):
 
     def skill_stop(self, message):
         self.speak("Stop skill : " + str(message))
-        self.vlc_stop(message)
+        self.handler_mycroft_vlc_stop(message)
         self.stop()
 
     # VLC events
@@ -176,38 +176,38 @@ class VlcPlayer(CommonPlaySkill):
     # Playback control / Mycroft events
     #--------------------------------------------
 
-    def vlc_play(self, message):
+    def handler_mycroft_vlc_play(self, message):
         player_state = self.list_player.get_state()
         if player_state == vlc.State.Paused:
-            self.vlc_resume(message)
+            self.handler_mycroft_vlc_resume(message)
         elif player_state == vlc.State.Stopped:
             self.speak("Playing playlist : " + self.vlc_get_current_playlist())
         self.list_player.play()
         pass
 
-    def vlc_stop(self, message):
+    def handler_mycroft_vlc_stop(self, message):
         self.speak("Stop VLC : " + str(message))
         if self.player.is_playing():
             self.list_player.stop()
         pass
 
-    def vlc_next(self, message):
+    def handler_mycroft_vlc_next(self, message):
         if self.player.is_playing():
             self.list_player.next()
         pass
 
-    def vlc_prev(self, message):
+    def handler_mycroft_vlc_prev(self, message):
         if self.player.is_playing():
             self.list_player.previous()
         pass
 
-    def vlc_pause(self, message):
+    def handler_mycroft_vlc_pause(self, message):
         if self.player.is_playing():
             self.list_player.pause()    
         pass
 
 
-    def vlc_resume(self, message):
+    def handler_mycroft_vlc_resume(self, message):
         """
         resume playback
 
@@ -219,7 +219,7 @@ class VlcPlayer(CommonPlaySkill):
             self.bus.emit(Message('mycroft.audio.service.track_info'))
         pass
 
-    def vlc_seek_forward(self, seconds=1):
+    def handler_mycroft_vlc_seek_forward(self, seconds=1):
         """
         skip X seconds
 
@@ -233,7 +233,7 @@ class VlcPlayer(CommonPlaySkill):
             new_time = duration
         self.player.set_time(new_time)
 
-    def vlc_seek_backward(self, seconds=1):
+    def handler_mycroft_vlc_seek_backward(self, seconds=1):
         """
         rewind X seconds
 
@@ -267,8 +267,9 @@ class VlcPlayer(CommonPlaySkill):
             track_info['type'] = track.get_type()
         return track_info
 
-    def vlc_track_info(self, message):
-        self.speak("track info : " + str(message))
+    def handler_mycroft_vlc_track_info(self, message):
+        
+        self.speak("track info - source: " + str(message.context.get('source')) + "- dest : " + str(message.context.get('destination') ))
         current_track = self.player.get_media()
         if current_track:
             track_info = self.vlc_get_track_info(current_track)
@@ -310,7 +311,7 @@ class VlcPlayer(CommonPlaySkill):
 
     def CPS_start(self, message, data):
         self.speak("CPS start : " + str(message) + " - data : "+ str(data))
-        self.vlc_play(message)
+        self.handler_mycroft_vlc_play(message)
         pass
 
 def create_skill():
