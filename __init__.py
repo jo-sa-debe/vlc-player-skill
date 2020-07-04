@@ -50,6 +50,7 @@ class VlcPlayer(CommonPlaySkill):
 
     def register_mycroft_player_control_events(self):
         self.add_event('mycroft.stop', self.skill_stop)
+        self.add_event('mycroft.audio.service.play', self.vlc_play)
         self.add_event('mycroft.audio.service.next', self.vlc_next)
         self.add_event('mycroft.audio.service.prev', self.vlc_prev)
         self.add_event('mycroft.audio.service.pause', self.vlc_pause)
@@ -275,12 +276,8 @@ class VlcPlayer(CommonPlaySkill):
                 self.speak("Title : " + track_info.get('title'))
             if track_info.get('artist'):
                 self.speak("Artist : " + track_info.get('artist'))
-            # if track_info:
-            #     if str(track_info.get('title')):
-            #         self.speak(str(track_info.get('title')))
-            #     if str(track_info.get('artist')):
-            #         self.speak(str(track_info.get('artist')))
-            return track_info
+
+            #return track_info
 
     # Search tools
     #-------------------------------------------- 
@@ -312,6 +309,7 @@ class VlcPlayer(CommonPlaySkill):
         return (phrase, level)
 
     def CPS_start(self, message, data):
+        self.speak("CPS start : " + str(message) + " - data : "+ str(data))
         self.vlc_play(message)
         pass
 
