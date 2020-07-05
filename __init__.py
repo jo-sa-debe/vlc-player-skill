@@ -186,12 +186,10 @@ class VlcPlayer(CommonPlaySkill):
         pass
 
     def send_mycroft_track_info_message(self, data, context):
-        if not context:
-            context = {}
+        context = {}
         context['source'] = self.name
         context['destination'] = self.name
-        if not data:
-            data = {}
+        data = {}
         self.bus.emit(Message('mycroft.audio.service.track_info', data, context))
 
     # Playback control / Mycroft events
