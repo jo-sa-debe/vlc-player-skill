@@ -169,7 +169,8 @@ class VlcPlayer(CommonPlaySkill):
     # SKILL event handlers
     #--------------------------------------------
     def handler_skill_vlc_play(self, message):
-        self.speak(str(message.data))
+        
+        self.speak("Skill play intent : " + str(message.data))
 
     # General control
     #--------------------------------------------
@@ -277,7 +278,7 @@ class VlcPlayer(CommonPlaySkill):
     #--------------------------------------------
     def handler_mycroft_question_query(self, message):
         #message.data.get('phrase')
-        self.speak('query - phrase: ' + str(message.data.get('phrase')))
+        self.speak('question query : ' + str(message.data.get('phrase')))
         
 
     # Track info
