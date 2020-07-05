@@ -47,7 +47,7 @@ class VlcPlayer(CommonPlaySkill):
 
 
     def register_entities(self):
-        self.register_entity_file('name_skill.entity')
+        self.register_entity_file('name.skill.entity')
         self.register_entity_file('name.artist.entity')
         self.register_entity_file('name_title.entity')
 
@@ -276,7 +276,8 @@ class VlcPlayer(CommonPlaySkill):
     # Other - Mycroft events
     #--------------------------------------------
     def handler_mycroft_question_query(self, message):
-        self.speak('query : ' + str(message.data) + ' - ' + str(message.context))
+        #message.data.get('phrase')
+        self.speak('query - phrase: ' + str(message.data.get('phrase')))
         
 
     # Track info
