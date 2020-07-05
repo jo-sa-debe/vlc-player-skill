@@ -43,6 +43,7 @@ class VlcPlayer(CommonPlaySkill):
         self.register_vlc_list_player_events()        
         # mycroft events
         self.register_mycroft_player_control_events()
+        self.register_mycroft_other_events()
 
 
     def register_entities(self):
@@ -70,6 +71,9 @@ class VlcPlayer(CommonPlaySkill):
         self.add_event('mycroft.audio.service.resume', self.handler_mycroft_vlc_resume)
         self.add_event('mycroft.audio.service.stop', self.handler_mycroft_vlc_stop)
         self.add_event('mycroft.audio.service.track_info', self.handler_mycroft_vlc_track_info)
+
+    def register_mycroft_other_events(self):
+        self.add_event('question:query', self.handler_mycroft_question_query)
 
     def register_vlc_list_player_events(self):
         self.vlc_list_events = self.list_player.event_manager()
@@ -197,7 +201,7 @@ class VlcPlayer(CommonPlaySkill):
         data = {}
         self.bus.emit(Message('mycroft.audio.service.track_info', data, context))
 
-    # Playback control / Mycroft events
+    # Playback control - Mycroft events
     #--------------------------------------------
 
     def handler_mycroft_vlc_play(self, message):
@@ -269,7 +273,11 @@ class VlcPlayer(CommonPlaySkill):
             new_time = 0
         self.player.set_time(new_time)
 
-
+    # Other - Mycroft events
+    #--------------------------------------------
+    def handler_mycroft_question_query(self, message):
+        self.speak('query : ' + str(message.data) + ' - ' + str(message.context))
+        
 
     # Track info
     #-------------------------------------------- 
