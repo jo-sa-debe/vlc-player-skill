@@ -1,2 +1,3 @@
-{name.skill} play ({name.title})
-{name.skill} start ({name.title})
+{name_skill} play ({name_title})
+{name_skill} start ({name_title})
+vlplayer

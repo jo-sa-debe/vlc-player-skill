@@ -36,18 +36,19 @@ class VlcPlayer(CommonPlaySkill):
         
         # entities
         self.register_entities()
+        # skill intents
+        self.register_intents()
         # vlc events
         self.register_vlc_player_events()
         self.register_vlc_list_player_events()        
         # mycroft events
         self.register_mycroft_player_control_events()
-        # skill intents
-        self.register_intents()
+
 
     def register_entities(self):
-        self.register_entity_file('name.skill.entity')
+        self.register_entity_file('name_skill.entity')
         self.register_entity_file('name.artist.entity')
-        self.register_entity_file('name.title.entity')
+        self.register_entity_file('name_title.entity')
 
     def register_intents(self):
         # also cover intents like 'vlc play' 'vlc next' 'vlc stop' ...
