@@ -51,13 +51,13 @@ class VlcPlayer(CommonPlaySkill):
 
     def register_intents(self):
         # also cover intents like 'vlc play' 'vlc next' 'vlc stop' ...
-        self.register_intent_file('player.vlc.play.intent', self.handler_mycroft_vlc_play)
-        self.register_intent_file('player.vlc.stop.intent', self.handler_mycroft_vlc_stop)
-        self.register_intent_file('player.vlc.next.intent', self.handler_mycroft_vlc_next)
-        self.register_intent_file('player.vlc.prev.intent', self.handler_mycroft_vlc_prev)
-        self.register_intent_file('player.vlc.pause.intent', self.handler_mycroft_vlc_pause)
-        self.register_intent_file('player.vlc.resume.intent', self.handler_mycroft_vlc_resume)
-        self.register_intent_file('player.trackinfo.intent', self.handler_mycroft_vlc_track_info)
+        self.register_intent_file('player.vlc.play.intent', self.handler_skill_vlc_play)
+        #self.register_intent_file('player.vlc.stop.intent', self.handler_skill_vlc_stop)
+        #self.register_intent_file('player.vlc.next.intent', self.handler_skill_vlc_next)
+        #self.register_intent_file('player.vlc.prev.intent', self.handler_skill_vlc_prev)
+        #self.register_intent_file('player.vlc.pause.intent', self.handler_skill_vlc_pause)
+        #self.register_intent_file('player.vlc.resume.intent', self.handler_skill_vlc_resume)
+        #self.register_intent_file('player.trackinfo.intent', self.handler_skill_vlc_track_info)
         pass
 
     def register_mycroft_player_control_events(self):
@@ -160,7 +160,11 @@ class VlcPlayer(CommonPlaySkill):
 
     def vlc_remove_track_from_list(self, track, list):
         pass
-
+    
+    # SKILL event handlers
+    #--------------------------------------------
+    def handler_skill_vlc_play(self, message):
+        self.speak(str(message.data))
 
     # General control
     #--------------------------------------------
