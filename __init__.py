@@ -34,7 +34,8 @@ class VlcPlayer(CommonPlaySkill):
         self.add_standard_lists()
         self.vlc_set_default_list()
         
-
+        # entities
+        self.register_entities()
         # vlc events
         self.register_vlc_player_events()
         self.register_vlc_list_player_events()        
@@ -43,8 +44,19 @@ class VlcPlayer(CommonPlaySkill):
         # skill intents
         self.register_intents()
 
+    def register_entities(self):
+        self.register_entity_file('name.skill.entity')
+        self.register_entity_file('name.artist.entity')
+        self.register_entity_file('name.title.entity')
 
     def register_intents(self):
+        # also cover intents like 'vlc play' 'vlc next' 'vlc stop' ...
+        self.register_intent_file('player.vlc.play.intent', self.handler_mycroft_vlc_play)
+        self.register_intent_file('player.vlc.stop.intent', self.handler_mycroft_vlc_stop)
+        self.register_intent_file('player.vlc.next.intent', self.handler_mycroft_vlc_next)
+        self.register_intent_file('player.vlc.prev.intent', self.handler_mycroft_vlc_prev)
+        self.register_intent_file('player.vlc.pause.intent', self.handler_mycroft_vlc_pause)
+        self.register_intent_file('player.vlc.resume.intent', self.handler_mycroft_vlc_resume)
         self.register_intent_file('player.trackinfo.intent', self.handler_mycroft_vlc_track_info)
         pass
 
@@ -154,7 +166,6 @@ class VlcPlayer(CommonPlaySkill):
     #--------------------------------------------
 
     def skill_stop(self, message):
-        self.speak("Stop skill : " + str(message))
         self.handler_mycroft_vlc_stop(message)
         self.stop()
 
@@ -163,10 +174,7 @@ class VlcPlayer(CommonPlaySkill):
 
     def vlc_track_changed(self, data, other):
         context = {}
-        context['source'] = self.name
-        context['destination'] = self.name
-        data = {}
-        self.bus.emit(Message('mycroft.audio.service.track_info', data, context))
+        self.send_mycroft_track_info_message(data, context)
 
     def vlc_start_track(self, data, other):
         pass
@@ -176,6 +184,15 @@ class VlcPlayer(CommonPlaySkill):
 
     def vlc_track_list_ended(self, data, other):
         pass
+
+    def send_mycroft_track_info_message(self, data, context):
+        if not context:
+            context = {}
+            context['source'] = self.name
+            context['destination'] = self.name
+        if not data:
+            data = {}
+        self.bus.emit(Message('mycroft.audio.service.track_info', data, context))
 
     # Playback control / Mycroft events
     #--------------------------------------------
@@ -190,7 +207,6 @@ class VlcPlayer(CommonPlaySkill):
         pass
 
     def handler_mycroft_vlc_stop(self, message):
-        self.speak("Stop VLC : " + str(message))
         if self.player.is_playing():
             self.list_player.stop()
         pass
@@ -275,7 +291,7 @@ class VlcPlayer(CommonPlaySkill):
         context = message.context
         if context:
             if context.get('source') == self.name and context.get('destination') == self.name:
-                self.speak("track info - source: " + str(message.context.get('source')) + "- dest : " + str(message.context.get('destination') ))
+                self.speak("track info - source: " + str(message.context.get('source')) + " - dest : " + str(message.context.get('destination') ))
                 current_track = self.player.get_media()
                 if current_track:
                     track_info = self.vlc_get_track_info(current_track)
@@ -285,6 +301,7 @@ class VlcPlayer(CommonPlaySkill):
                         self.speak("Artist : " + track_info.get('artist'))
 
             #return track_info
+
 
     # Search tools
     #-------------------------------------------- 
