@@ -1,7 +1,2 @@
-vlc play
-vlc start
-vlc player
-vlcplayer
-start vlcplayer
-start vlc
-play vlc
+{name.skill} ( play | start )
+( play | start ) {name.skill} 
