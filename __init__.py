@@ -404,7 +404,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         level = CQSMatchLevel.GENERAL
         if self.voc_match(phrase, self.vocabs['name.skill']):
             self.speak("phrase : " + str(phrase) + " by vlc-player")
-        return (phrase, level)
+
         
 
     def CQS_action(self, phrase, data):
