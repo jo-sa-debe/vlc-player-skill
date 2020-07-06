@@ -2,7 +2,7 @@ from mycroft import MycroftSkill, intent_file_handler, intent_handler
 from mycroft.messagebus import Message
 from mycroft.skills.audioservice import AudioService
 from mycroft.skills.common_play_skill import CommonPlaySkill, CPSMatchLevel
-from mycroft.skills.common_query_skill import CommonQuerySkill
+from mycroft.skills.common_query_skill import CommonQuerySkill, CQSMatchLevel
 #from mycroft.audio.services import vlc
 import vlc
 import random
@@ -347,7 +347,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def CPS_match_query_phrase(self, phrase):
         self.speak('CPS Query : ' + str(phrase))
         level = CPSMatchLevel.GENERIC
-        if phrase == "vlc-player" or phrase == "vlc":
+        if self.voc_match(phrase, 'name.skill.voc'):
             self.speak("phrase : " + str(phrase) + " by vlc-player")
         return (phrase, level)
 
@@ -360,6 +360,11 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     #-------------------------------------------- 
     def CQS_match_query_phrase(self, phrase):
         self.speak('CQS Query : ' + str(phrase))
+        level = CQSMatchLevel.GENERAL
+        if self.voc_match(phrase, 'name.skill.voc'):
+            self.speak("phrase : " + str(phrase) + " by vlc-player")
+        return (phrase, level)
+        
 
     def CQS_action(self, phrase, data):
         self.speak('CQS Action : ' + str(phrase) + ' - ' +str(data))
