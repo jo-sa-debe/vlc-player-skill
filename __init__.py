@@ -279,7 +279,8 @@ class VlcPlayer(CommonPlaySkill):
     def handler_mycroft_question_query(self, message):
         #message.data.get('phrase')
         self.speak('question query : ' + str(message.data.get('phrase')))
-        self.speak(str(message.data))
+        self.speak(str(message))
+
         
 
     # Track info
