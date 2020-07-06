@@ -21,6 +21,9 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         # vlc settings
         self.vlc_parse_flag = vlc.MediaParseFlag.local
         self.vlc_parse_timeout = -1 # = default vlc settings
+        # media attributes
+        self.media_attributes = {}
+        self.init_media_attributes()
         # configurations
         self.list_config = {}
         self.init_lists_config()
@@ -35,6 +38,9 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         self.add_standard_lists()
         self.vlc_set_default_list()
         
+        # vocabs
+        self.vocabs = {}
+        self.init_vocabs()
         # entities
         self.register_entities()
         # skill intents
@@ -46,6 +52,8 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         self.register_mycroft_player_control_events()
         self.register_mycroft_other_events()
 
+    def init_vocabs(self):
+        self.vocabs['name.skill'] = 'name.skill'
 
     def register_entities(self):
         self.register_entity_file('name.skill.entity')
@@ -92,6 +100,12 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
 
     def init_lists_config(self):
         # standard track lists : standard track list names start with "_"
+        
+        # default all list
+        self.list_config["all"] = { 
+            'list': '_all',
+            'path_setting': 'dvd_path'
+        }
         # default audio list
         self.list_config["audio"] = { 
             'list': '_audio',
@@ -118,6 +132,21 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
             'path_setting': 'dvd_path'
         }
 
+    def init_media_attributes(self):
+        self.media_attributes = {
+            'artist': 'artist',
+            'album': 'album',
+            'title': 'title',
+            'trackid': 'trackid',
+            'tracknumber': 'tracknumber',
+            'tracktotal': 'tracktotal',
+            'genre': 'genre',
+            'duration': 'duration',
+            'type': 'type',
+            'playlist': 'playlist'
+        }
+
+
     # List tools
     #--------------------------------------------
     def add_standard_lists(self):
@@ -127,6 +156,8 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
             if self.list_config[config_name]['path_setting'] in self.settings:
                 location = Path(str(self.settings[self.list_config[config_name]['path_setting']]))
                 self.track_lists = self.vlc_add_local_folder_to_list(location, self.track_lists, self.list_config[config_name]['list'])
+                self.vlc_trackinfo_for_list(self.track_lists, self.list_config[config_name]['list'] )
+
     
     def vlc_get_list_from_lists(self, list_name):
         if list_name in self.track_lists:
@@ -163,11 +194,18 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
 
     def vlc_add_track_to_list(self, track, lists, list_name):
         if list_name in lists:
-            lists[list_name].add_media(self.instance.media_new(track))
+            media_track = self.instance.media_new(track)
+            lists[list_name].add_media(media_track)
         return lists
 
     def vlc_remove_track_from_list(self, track, list):
         pass
+
+    def vlc_trackinfo_for_list(self, lists, list_name):
+        if list_name in lists:
+            lists[list_name].parse()
+            lists[list_name].tracks_get()
+
     
     # SKILL event handlers
     #--------------------------------------------
@@ -325,18 +363,15 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     #-------------------------------------------- 
 
     def vlc_search(self, data):
-        data = { 
-            'playlist' : '_audio',
-            'artist' : '',
-            'album' : '',
-            'title' : ''
-        }
-        # get playlist tracks
-        if 'playlist' in data:
-            tracklist = self.vlc_get_list_from_lists(data.get('playlist'))
-        else:
-            tracklist = self.vlc_get_current_playlist()
-        tracks = self.track_lists.get(tracklist)
+        # if no playlist, search current first
+        if not data['playlist']:
+            data['playlist'] = self.vlc_get_current_playlist()
+
+
+        # if not found search all playlist
+
+        # if not found forward to other skills
+        tracks = self.track_lists.get(data['playlist'])
         for track in tracks:
             pass
         meta = vlc.Meta
@@ -347,7 +382,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def CPS_match_query_phrase(self, phrase):
         self.speak('CPS Query : ' + str(phrase))
         level = CPSMatchLevel.GENERIC
-        if self.voc_match(phrase, 'name.skill'):
+        if self.voc_match(phrase, self.vocabs['name.skill']):
             self.speak("phrase : " + str(phrase) + " by vlc-player")
         return (phrase, level)
 
@@ -361,7 +396,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def CQS_match_query_phrase(self, phrase):
         self.speak('CQS Query : ' + str(phrase))
         level = CQSMatchLevel.GENERAL
-        if self.voc_match(phrase, 'name.skill'):
+        if self.voc_match(phrase, self.vocabs['name.skill']):
             self.speak("phrase : " + str(phrase) + " by vlc-player")
         return (phrase, level)
         
@@ -369,6 +404,29 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def CQS_action(self, phrase, data):
         self.speak('CQS Action : ' + str(phrase) + ' - ' +str(data))
 
+
+    # Query parsing
+    #-------------------------------------------- 
+
+    def parse_common_skill_query(self, phrase):
+        # check for key words - vocab
+        # - artist / group / band / from / by ...
+        # - title / track / song / video 
+        # - genre
+        # - playlist
+        # - commands ( e.g. : random/shuffle/any (music | song) )
+
+        # returns  (match, CPSMatchLevel[, callback_data]) or None: 
+            # example
+            # "match_text", CPSMatchLevel.MULTI_KEY, {"artist": 'artist_name', "song": 'song_name'})
+        data = {}
+        data = {
+            self.media_attributes['playlist'] : '_audio',
+            self.media_attributes['artist'] : 'deus',
+            self.media_attributes['song'] : 'what we talk about'
+        }
+        self.vlc_search(data)
+        pass
 
 def create_skill():
     return VlcPlayer()
