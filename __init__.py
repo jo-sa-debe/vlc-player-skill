@@ -347,7 +347,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def CPS_match_query_phrase(self, phrase):
         self.speak('CPS Query : ' + str(phrase))
         level = CPSMatchLevel.GENERIC
-        if self.voc_match(phrase, 'name.skill.voc'):
+        if self.voc_match(phrase, 'name.skill'):
             self.speak("phrase : " + str(phrase) + " by vlc-player")
         return (phrase, level)
 
@@ -361,7 +361,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def CQS_match_query_phrase(self, phrase):
         self.speak('CQS Query : ' + str(phrase))
         level = CQSMatchLevel.GENERAL
-        if self.voc_match(phrase, 'name.skill.voc'):
+        if self.voc_match(phrase, 'name.skill'):
             self.speak("phrase : " + str(phrase) + " by vlc-player")
         return (phrase, level)
         
