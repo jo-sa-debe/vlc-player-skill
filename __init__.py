@@ -194,8 +194,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def vlc_add_track_to_list(self, track, lists, list_name):
         if list_name in lists:
             media_track = self.instance.media_new(track)
-            media_track.parse()
-            media_track.tracks_get()
+            media_info = self.vlc_get_track_info(media_track)
             lists[list_name].add_media(media_track)
         return lists
 
