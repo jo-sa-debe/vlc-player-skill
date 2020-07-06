@@ -55,6 +55,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def register_intents(self):
         # also cover intents like 'vlc play' 'vlc next' 'vlc stop' ...
         self.register_intent_file('player.vlc.play.intent', self.handler_skill_vlc_play)
+        self.enable_intent('player.vlc.play.intent')
         #self.register_intent_file('player.vlc.stop.intent', self.handler_skill_vlc_stop)
         #self.register_intent_file('player.vlc.next.intent', self.handler_skill_vlc_next)
         #self.register_intent_file('player.vlc.prev.intent', self.handler_skill_vlc_prev)
