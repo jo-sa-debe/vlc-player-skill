@@ -147,6 +147,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         }
 
 
+
     # List tools
     #--------------------------------------------
     def add_standard_lists(self):
@@ -325,17 +326,17 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         track_info = {}
         meta = vlc.Meta
         if track:
-            
             track.parse_with_options(self.vlc_parse_flag)
-            track_info['album'] = track.get_meta(meta.Album) 
-            track_info['artist'] = track.get_meta(meta.Artist) 
-            track_info['title'] = track.get_meta(meta.Title) 
-            track_info['trackid'] = track.get_meta(meta.TrackID) 
-            track_info['tracknumber'] = track.get_meta(meta.TrackNumber) 
-            track_info['tracktotal'] = track.get_meta(meta.TrackTotal) 
-            track_info['genre'] = track.get_meta(meta.Genre) 
-            track_info['duration'] = track.get_duration()
-            track_info['type'] = track.get_type()
+            
+            track_info[self.media_attributes['album']] = track.get_meta(meta.Album) 
+            track_info[self.media_attributes['artist']] = track.get_meta(meta.Artist) 
+            track_info[self.media_attributes['title']] = track.get_meta(meta.Title) 
+            track_info[self.media_attributes['trackid]']] = track.get_meta(meta.TrackID) 
+            track_info[self.media_attributes['tracknumber']] = track.get_meta(meta.TrackNumber) 
+            track_info[self.media_attributes['tracktotal']] = track.get_meta(meta.TrackTotal) 
+            track_info[self.media_attributes['genre']] = track.get_meta(meta.Genre) 
+            track_info[self.media_attributes['duration']] = track.get_duration()
+            track_info[self.media_attributes['type']] = track.get_type()
         return track_info
 
     def handler_mycroft_vlc_track_info(self, message):
@@ -358,18 +359,28 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     #-------------------------------------------- 
 
     def vlc_search(self, data):
+        # keep the current playlist to be able to go back
+        current_playlist = self.vlc_get_current_playlist()
+        # use a playlist to store found tracks
+        search_result_playlist = self.instance.media_list_new()
+
         # if no playlist, search current first
-        if not data['playlist']:
-            data['playlist'] = self.vlc_get_current_playlist()
+        if not data[self.media_attributes['playlist']]:
+            data[self.media_attributes['playlist']] = self.vlc_get_current_playlist()
 
-
+        self.vlc_search_list_by_meta(self.track_lists[data[self.media_attributes['playlist']]], search_result_playlist, self.media_attributes['artist'], data[self.media_attributes['playlist']] )
         # if not found search all playlist
 
         # if not found forward to other skills
-        tracks = self.track_lists.get(data['playlist'])
-        for track in tracks:
-            pass
-        meta = vlc.Meta
+
+    def vlc_search_list_by_meta(self, track_list, result_list, attribute_name, attribute_value):
+        for track in track_list:
+            track_info = self.vlc_get_track_info(track)
+            if attribute_name in track_info:
+                # TODO: this needs to be changed to fuzzy search
+                if track_info.get(attribute_name) == attribute_value:
+                    result_list.add_media(track)
+        return result_list
 
 
     # Common Playback Skill methods
