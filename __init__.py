@@ -156,7 +156,6 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
             if self.list_config[config_name]['path_setting'] in self.settings:
                 location = Path(str(self.settings[self.list_config[config_name]['path_setting']]))
                 self.track_lists = self.vlc_add_local_folder_to_list(location, self.track_lists, self.list_config[config_name]['list'])
-                self.vlc_trackinfo_for_list(self.track_lists, self.list_config[config_name]['list'] )
 
     
     def vlc_get_list_from_lists(self, list_name):
@@ -195,16 +194,13 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def vlc_add_track_to_list(self, track, lists, list_name):
         if list_name in lists:
             media_track = self.instance.media_new(track)
+            media_track.parse()
+            media_track.tracks_get()
             lists[list_name].add_media(media_track)
         return lists
 
     def vlc_remove_track_from_list(self, track, list):
         pass
-
-    def vlc_trackinfo_for_list(self, lists, list_name):
-        if list_name in lists:
-            lists[list_name].media().parse()
-            lists[list_name].media().tracks_get()
 
     
     # SKILL event handlers
