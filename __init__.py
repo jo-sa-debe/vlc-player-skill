@@ -331,7 +331,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
             track_info[self.media_attributes['album']] = track.get_meta(meta.Album) 
             track_info[self.media_attributes['artist']] = track.get_meta(meta.Artist) 
             track_info[self.media_attributes['title']] = track.get_meta(meta.Title) 
-            track_info[self.media_attributes['trackid]']] = track.get_meta(meta.TrackID) 
+            track_info[self.media_attributes['trackid']] = track.get_meta(meta.TrackID) 
             track_info[self.media_attributes['tracknumber']] = track.get_meta(meta.TrackNumber) 
             track_info[self.media_attributes['tracktotal']] = track.get_meta(meta.TrackTotal) 
             track_info[self.media_attributes['genre']] = track.get_meta(meta.Genre) 
