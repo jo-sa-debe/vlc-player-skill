@@ -203,8 +203,8 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
 
     def vlc_trackinfo_for_list(self, lists, list_name):
         if list_name in lists:
-            lists[list_name].parse()
-            lists[list_name].tracks_get()
+            lists[list_name].media().parse()
+            lists[list_name].media().tracks_get()
 
     
     # SKILL event handlers
