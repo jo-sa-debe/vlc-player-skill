@@ -2,13 +2,14 @@ from mycroft import MycroftSkill, intent_file_handler, intent_handler
 from mycroft.messagebus import Message
 from mycroft.skills.audioservice import AudioService
 from mycroft.skills.common_play_skill import CommonPlaySkill, CPSMatchLevel
+from mycroft.skills.common_query_skill import CommonQuerySkill
 #from mycroft.audio.services import vlc
 import vlc
 import random
 import os
 from pathlib import Path
 
-class VlcPlayer(CommonPlaySkill):
+class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def __init__(self):
         super().__init__(name="vlc-player")
 
@@ -73,7 +74,8 @@ class VlcPlayer(CommonPlaySkill):
         self.add_event('mycroft.audio.service.track_info', self.handler_mycroft_vlc_track_info)
 
     def register_mycroft_other_events(self):
-        self.add_event('question:query', self.handler_mycroft_question_query)
+        #self.add_event('question:query', self.handler_mycroft_question_query)
+        pass
 
     def register_vlc_list_player_events(self):
         self.vlc_list_events = self.list_player.event_manager()
@@ -276,10 +278,10 @@ class VlcPlayer(CommonPlaySkill):
 
     # Other - Mycroft events
     #--------------------------------------------
-    def handler_mycroft_question_query(self, message):
-        #message.data.get('phrase')
-        self.speak('question query : ' + str(message.data.get('phrase')))
-        self.speak(str(message))
+    # def handler_mycroft_question_query(self, message):
+    #     #message.data.get('phrase')
+    #     self.speak('question query : ' + str(message.data.get('phrase')))
+    #     self.speak(str(message))
 
         
 
@@ -352,6 +354,15 @@ class VlcPlayer(CommonPlaySkill):
         self.speak("CPS start : " + str(message) + " - data : "+ str(data))
         self.handler_mycroft_vlc_play(message)
         pass
+
+    # Common Query Skill methods
+    #-------------------------------------------- 
+    def CQS_match_query_phrase(self, phrase):
+        self.speak('CQS Query : ' + str(phrase))
+
+    def CQS_action(self, phrase, data):
+        self.speak('CQS Action : ' + str(phrase) + ' - ' +str(data))
+
 
 def create_skill():
     return VlcPlayer()
