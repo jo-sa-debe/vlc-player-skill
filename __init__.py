@@ -439,8 +439,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         data = {}
         data = {
             self.media_attributes['playlist'] : '_audio',
-            self.media_attributes['artist'] : 'deus',
-            self.media_attributes['title'] : 'what we talk about'
+            self.media_attributes['artist'] : 'dEUS',
         }
         self.vlc_search(data)
         pass
