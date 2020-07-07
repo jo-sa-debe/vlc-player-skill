@@ -370,7 +370,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
 
         track_score = self.vlc_search_list_by_meta(self.track_lists[data[self.media_attributes['playlist']]], data )
         for track in track_score:
-            self.speak(str(track) + ' score : ' + track_score[track])
+            self.speak(str(track) + ' score : ' + str(track_score[track]))
         # if not found search all playlist
 
         # if not found forward to other skills
@@ -380,7 +380,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         track_score = {}
 
         for track in track_list:
-            track_score[track] = 0
+            track_score[track] = 0.00
 
             track_info = self.vlc_get_track_info(track)
             for attribute in attribute_value_list:
