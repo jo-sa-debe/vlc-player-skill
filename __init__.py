@@ -368,19 +368,27 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         if not data[self.media_attributes['playlist']]:
             data[self.media_attributes['playlist']] = self.vlc_get_current_playlist()
 
-        self.vlc_search_list_by_meta(self.track_lists[data[self.media_attributes['playlist']]], search_result_playlist, self.media_attributes['artist'], data[self.media_attributes['playlist']] )
+        track_score = self.vlc_search_list_by_meta(self.track_lists[data[self.media_attributes['playlist']]], data )
+        for track in track_score:
+            self.speak(str(track) + ' score : ' + track_score[track])
         # if not found search all playlist
 
         # if not found forward to other skills
 
-    def vlc_search_list_by_meta(self, track_list, result_list, attribute_name, attribute_value):
+    def vlc_search_list_by_meta(self, track_list, attribute_value_list):
+        score_increment = 1 / len( attribute_value_list )
+        track_score = {}
+
         for track in track_list:
+            track_score[track] = 0
+
             track_info = self.vlc_get_track_info(track)
-            if attribute_name in track_info:
+            for attribute in attribute_value_list:
                 # TODO: this needs to be changed to fuzzy search
-                if track_info.get(attribute_name) == attribute_value:
-                    result_list.add_media(track)
-        return result_list
+                if track_info[attribute] == attribute_value_list[attribute]:
+                    track_score[track] = track_score[track] + score_increment
+
+        return track_score
 
 
     # Common Playback Skill methods
@@ -404,6 +412,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         level = CQSMatchLevel.GENERAL
         if self.voc_match(phrase, self.vocabs['name.skill']):
             self.speak("phrase : " + str(phrase) + " by vlc-player")
+            self.parse_common_skill_query(phrase)
 
         
 
