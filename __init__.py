@@ -385,8 +385,9 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
             track_info = self.vlc_get_track_info(track)
             for attribute in attribute_value_list:
                 # TODO: this needs to be changed to fuzzy search
-                if track_info[attribute] == attribute_value_list[attribute]:
-                    track_score[track] = track_score[track] + score_increment
+                if attribute in track_info:
+                    if track_info[attribute] == attribute_value_list[attribute]:
+                        track_score[track] = track_score[track] + score_increment
 
         return track_score
 
