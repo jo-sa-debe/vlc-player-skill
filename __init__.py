@@ -28,7 +28,7 @@ class VlcPlayerTrackAttribute():
     def __init__(self, attribute_name):
         # name
         self.attribute_name = attribute_name
-        self.attribute_value
+        self.attribute_value = ''
 
         # vocabs
         self.vocabs = []
