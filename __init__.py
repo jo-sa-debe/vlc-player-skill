@@ -171,9 +171,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         self.vocabs['name.title'] = 'name.title'
 
     def register_entities(self):
-        self.register_entity_file('name.skill.entity')
-        self.register_entity_file('name.artist.entity')
-        self.register_entity_file('name.title.entity')
+        pass
 
     def register_intents(self):
         # also cover intents like 'vlc play' 'vlc next' 'vlc stop' ...
