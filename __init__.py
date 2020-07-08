@@ -378,11 +378,11 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
             if track_score[track] > 0.0:
                 #self.speak(str(self.track_lists[data[self.media_attributes['playlist']]][track]) + ' score : ' + str(track_score[track]))
                 # use 'search' playlist to store found tracks
-                self.vlc_add_track_to_list(track, self.track_lists, self.list_config['search'])
+                self.vlc_add_track_to_list(track, self.track_lists, self.list_config['search']['list'])
 
         self.vlc_set_current_playlist(self.list_config['search'])
         self.list_player.play()        
-        
+
         # if not found search all playlist
 
         # if not found forward to other skills
