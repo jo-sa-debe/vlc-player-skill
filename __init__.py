@@ -9,6 +9,117 @@ import random
 import os
 from pathlib import Path
 
+
+
+class VlcPlayerTrackAttribute():
+
+    allowed_attribute_names = (
+        'artist',
+        'title',
+        'album',
+        'playlist',
+        'duration',
+        'tracknumber',
+        'trackid',
+        'genre',
+        'type'
+    )
+
+    def __init__(self, attribute_name):
+        # name
+        self.attribute_name = attribute_name
+        self.attribute_value
+
+        # vocabs
+        self.vocabs = []
+
+    def get_allowed_attribute_names(self):
+        return self.allowed_attribute_names
+
+    def attribute_name_is_allowed(self, attribute_name):
+        if attribute_name in self.get_allowed_attribute_names():
+            return True
+        else:
+            return False
+
+    def get_name(self):
+        return self.attribute_name
+    
+    def set_value(self, value):
+        self.attribute_value = value
+
+    def get_value(self):
+        return self.attribute_value
+
+    def add_vocab(self, vocab):
+        if vocab not in self.vocabs:
+            self.vocabs.append(vocab)
+
+    def get_vocabs(self):
+        return self.vocabs
+
+
+
+
+
+
+class VlcPlayerTrackAttributeFactory():
+    
+    @staticmethod
+    def create_attribute(attribute_name):
+        attribute = VlcPlayerTrackAttribute(attribute_name)
+        if attribute.attribute_name_is_allowed(attribute_name):
+            method_name = '__create_attribute_' + attribute_name
+            method = getattr(VlcPlayerTrackAttributeFactory(), method_name, False)
+            attribute = method(attribute)    
+            return attribute
+
+    @staticmethod
+    def create_attribute_with_value(attribute_name, attribute_value):
+        attribute = VlcPlayerTrackAttributeFactory.create_attribute(attribute_name)
+        if attribute:
+            attribute.set_value(attribute_value)
+            return attribute
+
+    @staticmethod
+    def __create_attribute_artist(attribute):
+        attribute.add_vocab('name.artist')
+        return attribute
+
+    @staticmethod
+    def __create_attribute_playlist(attribute):
+        attribute.add_vocab('name.playlist')
+        return attribute
+
+    @staticmethod
+    def __create_attribute_album(attribute):
+        attribute.add_vocab('name.album')
+        return attribute
+
+    @staticmethod
+    def __create_attribute_title(self, attribute):
+        attribute.add_vocab('name.title')
+        return attribute
+
+
+
+
+
+class VlcPlayerTrack():
+    def __init__(self, track):
+        self.track = track
+        self.track_attributes = {}
+
+    def set_track_attribute(self, track_attribute):
+        self.track_attributes[track_attribute.get_name()] = track_attribute
+
+    def get_track_attributes(self):
+        return self.track_attributes
+
+
+
+
+
 class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def __init__(self):
         super().__init__(name="vlc-player")
@@ -54,6 +165,9 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
 
     def init_vocabs(self):
         self.vocabs['name.skill'] = 'name.skill'
+        self.vocabs['name.artist'] = 'name.artist'
+        self.vocabs['name.playlist'] = 'name.playlist'
+        self.vocabs['name.title'] = 'name.title'
 
     def register_entities(self):
         self.register_entity_file('name.skill.entity')
@@ -338,7 +452,9 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         meta = vlc.Meta
         if track:
             track.parse_with_options(self.vlc_parse_flag)
-            
+            # set artist
+            attribute = VlcPlayerTrackAttributeFactory.create_attribute_with_value('artist', track.get_meta(meta.Artist))
+
             track_info[self.media_attributes['album']] = track.get_meta(meta.Album) 
             track_info[self.media_attributes['artist']] = track.get_meta(meta.Artist) 
             track_info[self.media_attributes['title']] = track.get_meta(meta.Title) 
@@ -453,6 +569,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         # returns  (match, CPSMatchLevel[, callback_data]) or None: 
             # example
             # "match_text", CPSMatchLevel.MULTI_KEY, {"artist": 'artist_name', "song": 'song_name'})
+
         data = {}
         data = {
             self.media_attributes['playlist'] : '_audio',
