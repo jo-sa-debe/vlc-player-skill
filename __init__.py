@@ -131,6 +131,11 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
             'list': '_dvd',
             'path_setting': 'dvd_path'
         }
+        # default search list
+        self.list_config["search"] = { 
+            'list': '_search',
+            'path_setting': ''
+        }
 
     def init_media_attributes(self):
         self.media_attributes = {
@@ -361,9 +366,9 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
     def vlc_search(self, data):
         # keep the current playlist to be able to go back
         current_playlist = self.vlc_get_current_playlist()
-        # use a playlist to store found tracks
-        search_result_playlist = self.instance.media_list_new()
+        
 
+        
         # if no playlist, search current first
         if not data[self.media_attributes['playlist']]:
             data[self.media_attributes['playlist']] = self.vlc_get_current_playlist()
@@ -372,7 +377,12 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
         for track in track_score:
             if track_score[track] > 0.0:
                 #self.speak(str(self.track_lists[data[self.media_attributes['playlist']]][track]) + ' score : ' + str(track_score[track]))
-                self.speak('score : ' + str(track_score[track]))
+                # use 'search' playlist to store found tracks
+                self.vlc_add_track_to_list(track, self.track_lists, self.list_config['search'])
+
+        self.vlc_set_current_playlist(self.list_config['search'])
+        self.list_player.play()        
+        
         # if not found search all playlist
 
         # if not found forward to other skills
