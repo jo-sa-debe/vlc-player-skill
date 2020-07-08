@@ -119,6 +119,43 @@ class VlcPlayerTrack():
 
 
 
+class VlcPlayerPlaylist():
+    def __init__(self):
+        self.tracks = []
+        pass
+    
+    def add_tracks_from_local_folder(self, folder, recursive):
+        pass
+
+    def add_track(self):
+        pass
+
+    def get_tracks(self):
+        pass
+
+class VlcPlayerPlaylistFactory():
+    standard_playlists = [
+        '_audio',
+        '_video',
+        '_cd',
+        '_dvd',
+        '_search'
+        '_playlist'
+    ]
+
+    @staticmethod
+    def create_playlist():
+        pass
+    
+    @staticmethod
+    def create_standard_playlists():
+        lists = []
+
+    @staticmethod
+    def __create_playlist__audio():
+        pass
+        
+
 
 
 class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
@@ -454,7 +491,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
             # set artist
             attribute = VlcPlayerTrackAttributeFactory.create_attribute_with_value('artist', track.get_meta(meta.Artist))
             self.speak( str(attribute.get_name()) + ' : ' + str(attribute.get_value()) + ' : ' + str(track.get_meta(meta.Artist)))
-            
+
 
             track_info[self.media_attributes['album']] = track.get_meta(meta.Album) 
             track_info[self.media_attributes['artist']] = track.get_meta(meta.Artist) 
