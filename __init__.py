@@ -193,13 +193,19 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
                 for file in filenames:
                     track_path = Path(dirpath)
                     track_path = track_path / file
-                    lists = self.vlc_add_track_to_list(str(track_path.resolve()), lists, list_name)    
+                    lists = self.vlc_add_trackpath_to_list(str(track_path.resolve()), lists, list_name)    
         return lists
 
 
-    def vlc_add_track_to_list(self, track, lists, list_name):
+    def vlc_add_trackpath_to_list(self, track_path, lists, list_name):
         if list_name in lists:
-            media_track = self.instance.media_new(track)
+            media_track = self.instance.media_new(track_path)
+            media_info = self.vlc_get_track_info(media_track)
+            lists[list_name].add_media(media_track)
+        return lists
+
+    def vlc_add_mediatrack_to_list(self, media_track, lists, list_name):
+        if list_name in lists:
             media_info = self.vlc_get_track_info(media_track)
             lists[list_name].add_media(media_track)
         return lists
@@ -378,7 +384,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
             if track_score[track] > 0.0:
                 #self.speak(str(self.track_lists[data[self.media_attributes['playlist']]][track]) + ' score : ' + str(track_score[track]))
                 # use 'search' playlist to store found tracks
-                self.vlc_add_track_to_list(track, self.track_lists, self.list_config['search']['list'])
+                self.vlc_add_mediatrack_to_list(track, self.track_lists, self.list_config['search']['list'])
 
         self.vlc_set_current_playlist(self.list_config['search'])
         self.list_player.play()        
