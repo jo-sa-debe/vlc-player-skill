@@ -386,7 +386,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
                 # use 'search' playlist to store found tracks
                 self.vlc_add_mediatrack_to_list(track, self.track_lists, self.list_config['search']['list'])
 
-        self.vlc_set_current_playlist(self.list_config['search'])
+        self.vlc_set_current_playlist(self.list_config['search']['list'])
         self.list_player.play()        
 
         # if not found search all playlist
