@@ -453,6 +453,7 @@ class VlcPlayer(CommonPlaySkill, CommonQuerySkill):
             track.parse_with_options(self.vlc_parse_flag)
             # set artist
             attribute = VlcPlayerTrackAttributeFactory.create_attribute_with_value('artist', track.get_meta(meta.Artist))
+            self.speak( str(attribute.get_name()) + ' : ' + str(attribute.get_value()))
 
             track_info[self.media_attributes['album']] = track.get_meta(meta.Album) 
             track_info[self.media_attributes['artist']] = track.get_meta(meta.Artist) 
