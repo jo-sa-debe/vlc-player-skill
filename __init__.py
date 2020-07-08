@@ -70,7 +70,7 @@ class VlcPlayerTrackAttributeFactory():
         attribute = VlcPlayerTrackAttribute(attribute_name)
         if attribute.attribute_name_is_allowed(attribute_name):
             method_name = '__create_attribute_' + attribute_name
-            method = getattr(VlcPlayerTrackAttributeFactory(), method_name, False)
+            method = getattr(VlcPlayerTrackAttributeFactory(), method_name)
             attribute = method(attribute)    
             return attribute
 
